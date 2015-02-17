@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+	<link rel='stylesheet' href='index.css'>
+	<title>Elementary Cellular Automata</title>
+</head>
+
+<body>
+
+
+	<svg></svg>
+
+	<div class='meta is-open'>
+
+		<div class='meta-btn meta-open'>
+			<span class='meta-open-gear'> &#9881; </span>
+			<span class='meta-open-close hide'> &#215; </span>
+		</div>
+
+		<div class='meta-btn meta-play'>
+			&#8634;
+		</div>
+
+		<div class='meta-btn meta-fastForward'>
+			&#9193;
+		</div>
+
+		<h1>Elementary Cellular Automata</h1>
+
+		<form class='meta-settings'>
+
+			<div class='field--inline'>
+				Rule # <input maxlength='3' type='text' value='30' class='meta-settings-ruleNo'>
+			</div>
+
+			<div class='field--inline'>
+				Width of cells <input maxlength='3' type='text' value='100' class='meta-settings-width'>
+			</div>
+
+			<table class='rules'>
+				<tbody>
+					<tr class='rules-patterns'>
+						<td class='rules-patterns-cells rules-0'>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='1'></button>
+						</td>
+						<td class='rules-patterns-cells rules-1'>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='0'></button>
+						</td>
+						<td class='rules-patterns-cells rules-2'>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='1'></button>
+						</td>
+						<td class='rules-patterns-cells rules-3'>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='0'></button>
+						</td>
+						<td class='rules-patterns-cells rules-4'>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='1'></button>
+						</td>
+						<td class='rules-patterns-cells rules-5'>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='1'></button>
+							<button disabled class='cell' data-state='0'></button>
+						</td>
+						<td class='rules-patterns-cells rules-6'>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='1'></button>
+						</td>
+						<td class='rules-patterns-cells rules-7'>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='0'></button>
+							<button disabled class='cell' data-state='0'></button>
+						</td>
+					</tr>
+
+					<tr class='rules-arrows'>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+						<td>&#8595;</td>
+					</tr>
+
+					<tr class='rules-newStates'>
+						<td class='rules-0'> <button data-i=0 class='cell' data-state='0'></button> </td>
+						<td class='rules-1'> <button data-i=1 class='cell' data-state='0'></button> </td>
+						<td class='rules-2'> <button data-i=2 class='cell' data-state='0'></button> </td>
+						<td class='rules-3'> <button data-i=3 class='cell' data-state='0'></button> </td>
+						<td class='rules-4'> <button data-i=4 class='cell' data-state='0'></button> </td>
+						<td class='rules-5'> <button data-i=5 class='cell' data-state='0'></button> </td>
+						<td class='rules-6'> <button data-i=6 class='cell' data-state='0'></button> </td>
+						<td class='rules-7'> <button data-i=7 class='cell' data-state='0'></button> </td>
+					</tr>
+					<tr>
+				</tbody>
+			</table>
+
+			<div class='field field--seed'>
+				<label>Seed with </label>
+				<span><input id='seed-random' type='radio' name='seed' checked='checked' class='meta-seed-random'> <label for='seed-random'>Random</label></span>
+				<span><input id='seed-middle' type='radio' name='seed' class='meta-seed-middle'> <label for='seed-middle'>Only Middle</label></span>
+			</div>
+
+		</form><!-- .meta-settings -->
+
+	</div><!-- .meta -->
+
+	<script src='./build.js'></script>
+</body>
+</html>
