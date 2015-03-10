@@ -1,8 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/big/j/code/elementary_cellular_automata/index.js":[function(require,module,exports){
 require('./js/d3.v3.min')
 
-// 128 64 32 16 8 4 2 1
-var settings = { width: 100, rules: [0,0,0,1,1,1,1,0], seed: 'random' }
+var settings = {
+	width: 100,
+	rules: [0,0,0,1,1,1,1,0],
+	seed: 'random',
+	color: 'red'
+}
 
 draw_generations()
 
@@ -10,34 +14,30 @@ function draw_generations() {
 	var svg = document.querySelector('svg'),
 		pad = 2,
 		cell_size = svg.offsetWidth / settings.width - pad,
-		n_rows = Math.floor(svg.offsetHeight/cell_size)
+		n_rows = Math.floor(svg.offsetHeight / cell_size)
+
+	while(svg.firstChild) svg.removeChild(svg.firstChild)
 
 	if(settings.seed === 'random') var grid = generate_random(settings.width)
 	else var grid = generate_middle(settings.width)
 
-	for(var i = 0; i < n_rows; ++i)
-		calculate_generation(i+1, grid, settings.rules)
-	draw_grid(grid, cell_size, pad)
+	for(var i = 0; i < n_rows; ++i) {
+		draw_row(svg, i, grid[i], cell_size, pad)
+		calculate_generation(i + 1, grid, settings.rules)
+	}
 }
 
-function draw_grid(grid, cell_size, pad) {
-	// Rows/generations
-	var row = d3.select('svg').html('')
-		.selectAll('g')
-		.data(grid)
-		.enter().append('g')
-	
-	// Columns/cells
-	var cols = row.selectAll('rect')
-		.data(id)
+function draw_row(svg, row_index, row_data, cell_size, pad) {
+	var row = d3.select('svg').append('g')
+
+	var cols = row.selectAll('rect').data(row_data)
 		.enter().append('rect')
 		.attr('width', cell_size)
 		.attr('height', cell_size)
-		.attr('y', function(_, _, j) { return j * (cell_size + pad) })
+		.attr('y', function() { return row_index * (cell_size + pad) })
 		.attr('x', function(_, i) { return i * (cell_size + pad) })
 		.attr('data-state', id)
 
-	// Animate each row
 	row
 		.attr('opacity', 0)
 		.transition()
@@ -45,6 +45,16 @@ function draw_grid(grid, cell_size, pad) {
 		.delay(function(x,i) { return i * 300})
 		.attr('opacity', 1)
 }
+
+/*
+	// Animate each row
+	row
+		.attr('opacity', 0)
+		.transition()
+		.duration(300)
+		.delay(function(x,i) { return i * 300})
+		.attr('opacity', 1)
+*/
 
 function fast_forward() {
 	var row = d3.select('svg').selectAll('g').transition().delay(0).duration(0).attr('opacity', 1)
@@ -78,9 +88,12 @@ function calculate_generation(row, grid, rules) {
 	return grid
 }
 
+
 // Utils
 
+// Modulus that works with negative numbers
 function mod(dividend, divisor) { return ((dividend % divisor) + divisor) % divisor; }
+
 function id(x){return x}
 
 
@@ -93,16 +106,16 @@ meta_el.querySelector('.meta-open').onclick = function() {
 	else meta_el.className = 'meta'
 }
 
-// UI Events
-
 meta_el.querySelector('.meta-play').onclick = draw_generations
 
 meta_el.querySelector('.meta-fastForward').onclick = fast_forward
 
 meta_el.querySelector('.meta-settings-ruleNo').onkeyup = function(ev) {
 	var binaries = Number(this.value).toString(2).split('')
+
 	// Zero-pad the binary number
 	for(var i = 0, len = binaries.length; i < 8 - len; ++i) binaries.unshift('0')
+
 	settings.rules = binaries
 	set_cell_states(settings.rules)
 }
@@ -122,9 +135,7 @@ meta_el.querySelector('.meta-settings-width').onchange = function(ev) {
 var cell_states = meta_el.querySelectorAll('.rules-newStates .cell')
 
 function set_cell_states(rules) {
-	[].forEach.call(cell_states, function(el, i) {
-		el.setAttribute('data-state', rules[i])
-	})
+	[].forEach.call(cell_states, function(el, i) { el.setAttribute('data-state', rules[i]) })
 }
 
 set_cell_states(settings.rules)

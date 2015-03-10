@@ -127,12 +127,23 @@ body > svg {
 	width: 65px;
 	height: 65px;
 	position: absolute;
-	left: -60px;
-	font-size: 60px;
+	left: -65px;
+	font-size: 40px;
+	text-align: center;
+	line-height: 65px;
 	cursor: pointer;
-	box-shadow: -10px 0px 12px -9px rgb(128, 128, 128);
+	box-shadow: -10px 0px 12px -11px rgb(208, 208, 208);
 	background-color: rgb(230,230,230);
+	border-radius: 4px 0 0 4px;
 	color: #999;
+}
+
+.meta-btn.meta-fastForward {
+	font-size: 32px;
+}
+
+.meta-btn.meta-play {
+	font-size: 38px;
 }
 
 .meta-btn:hover {

@@ -1,0 +1,3 @@
+- compute one row at a time
+- save form state to url
+- deja-viewify form to get rid of all that extra js

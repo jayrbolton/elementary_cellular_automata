@@ -3,6 +3,7 @@
 <head>
 	<link rel='stylesheet' href='index.css'>
 	<title>Elementary Cellular Automata</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -10,19 +11,20 @@
 
 	<svg></svg>
 
+
 	<div class='meta is-open'>
 
 		<div class='meta-btn meta-open'>
-			<span class='meta-open-gear'> &#9881; </span>
-			<span class='meta-open-close hide'> &#215; </span>
+			<span class='meta-open-gear'> <i class='fa fa-cog'></i> </span>
+			<span class='meta-open-close hide'> <i class='fa fa-times'></i> </span>
 		</div>
 
 		<div class='meta-btn meta-play'>
-			&#8634;
+			<i class='fa fa-refresh'></i>
 		</div>
 
 		<div class='meta-btn meta-fastForward'>
-			&#9193;
+			<i class='fa fa-fast-forward'></i>
 		</div>
 
 		<h1>Elementary Cellular Automata</h1>
@@ -108,14 +110,14 @@
 			</table>
 
 			<div class='field field--seed'>
-				<label>Seed with </label>
+				<label>Seed initial row with </label>
 				<span><input id='seed-random' type='radio' name='seed' checked='checked' class='meta-seed-random'> <label for='seed-random'>Random</label></span>
 				<span><input id='seed-middle' type='radio' name='seed' class='meta-seed-middle'> <label for='seed-middle'>Only Middle</label></span>
 			</div>
 
 		</form><!-- .meta-settings -->
 
-	</div><!-- .meta -->
+	</div><!-- end .meta -->
 
 	<script src='./build.js'></script>
 </body>
