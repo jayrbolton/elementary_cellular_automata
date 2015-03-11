@@ -8,23 +8,27 @@
 
 <body>
 
-
 	<svg></svg>
 
-
 	<div class='meta is-open'>
+		<!--= class_if meta_open 'is-open' -->
 
 		<div class='meta-btn meta-open'>
-			<span class='meta-open-gear'> <i class='fa fa-cog'></i> </span>
-			<span class='meta-open-close hide'> <i class='fa fa-times'></i> </span>
+			<span class='meta-open-gear'>
+				<!--= on 'click' (def 'meta_open' true) -->
+				<i class='fa fa-cog'></i>
+			</span>
+
+			<span class='meta-open-close hide'>
+				<!--= on 'click' (def 'meta_open' false) -->
+				<i class='fa fa-times'></i>
+			</span>
 		</div>
 
 		<div class='meta-btn meta-play'>
-			<i class='fa fa-refresh'></i>
-		</div>
-
-		<div class='meta-btn meta-fastForward'>
-			<i class='fa fa-fast-forward'></i>
+			<i class='fa fa-refresh'>
+				<!--= on 'click' draw -->
+			</i>
 		</div>
 
 		<h1>Elementary Cellular Automata</h1>
@@ -32,11 +36,15 @@
 		<form class='meta-settings'>
 
 			<div class='field--inline'>
-				Rule # <input maxlength='3' type='text' value='30' class='meta-settings-ruleNo'>
+				Rule #
+				<input maxlength='3' type='number' value='30' class='meta-settings-ruleNo'>
+				<!--= on 'keyup' (set 'settings.rules' (dec_to_bin get_value)) -->
 			</div>
 
 			<div class='field--inline'>
-				Width of cells <input maxlength='3' type='text' value='100' class='meta-settings-width'>
+				Width of cells
+				<input maxlength='3' type='text' value='100' class='meta-settings-width'>
+				<!--= on 'change' (def 'settings.width' get_value) -->
 			</div>
 
 			<table class='rules'>
@@ -96,14 +104,13 @@
 					</tr>
 
 					<tr class='rules-newStates'>
-						<td class='rules-0'> <button data-i=0 class='cell' data-state='0'></button> </td>
-						<td class='rules-1'> <button data-i=1 class='cell' data-state='0'></button> </td>
-						<td class='rules-2'> <button data-i=2 class='cell' data-state='0'></button> </td>
-						<td class='rules-3'> <button data-i=3 class='cell' data-state='0'></button> </td>
-						<td class='rules-4'> <button data-i=4 class='cell' data-state='0'></button> </td>
-						<td class='rules-5'> <button data-i=5 class='cell' data-state='0'></button> </td>
-						<td class='rules-6'> <button data-i=6 class='cell' data-state='0'></button> </td>
-						<td class='rules-7'> <button data-i=7 class='cell' data-state='0'></button> </td>
+						<td>
+							<!--= repeat settings.rules -->
+							<button class='cell'>
+								<!--= attr 'data-i' i -->
+								<!--= attr 'data-state' each -->
+							</button>
+						</td>
 					</tr>
 					<tr>
 				</tbody>
@@ -111,15 +118,23 @@
 
 			<div class='field field--seed'>
 				<label>Seed initial row with </label>
-				<span><input id='seed-random' type='radio' name='seed' checked='checked' class='meta-seed-random'> <label for='seed-random'>Random</label></span>
-				<span><input id='seed-middle' type='radio' name='seed' class='meta-seed-middle'> <label for='seed-middle'>Only Middle</label></span>
+				<span>
+					<input id='seed-random' type='radio' name='seed' checked='checked' class='meta-seed-random'>
+					<!--= on 'change' (def 'settings.seed' 'random') -->
+					<label for='seed-random'>Random</label>
+				</span>
+
+				<span>
+					<input id='seed-middle' type='radio' name='seed' class='meta-seed-middle'>
+					<label for='seed-middle'>Only Middle</label>
+				</span>
 			</div>
 
-		</form><!-- .meta-settings -->
+		</form>
 
 		<div class='explanation'>
 			<p><strong>Elementary Cellular Automata</strong> are a very simple kind of simulation using binary cells. Each row is a generation, advancing through time from top to bottom.</p>
-			<p>Each new cell's state (0 or 1) is determined by the previous cell directly above, above-left, and above-right of it. The list of rules above determine the new state.</p>
+			<p>Each new cell's state (0 or 1) is determined by the previous cell directly above, above-left, and above-right of it. A list of rules determines the new state.</p>
 			<p>For more information, see <a href='http://mathworld.wolfram.com/ElementaryCellularAutomaton.html' target='_blank'>Wolfram MathWorld</a> and <a href='https://en.wikipedia.org/wiki/Elementary_cellular_automaton' target='_blank'>Wikipedia</a></p>
 			<p>Some interesting rules of note are Rule 110 (which is Turing Complete) and Rule 30 (which is used to generate randomness). I personally like how Rule 57 looks with the "only middle" option.</p>
 		</div>
