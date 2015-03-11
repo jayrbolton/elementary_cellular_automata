@@ -1,4 +1,5 @@
 require('./js/d3.v3.min')
+require('view-script')
 
 var settings = {
 	width: 100,

@@ -16,6 +16,7 @@
 		"url": "https://github.com/jayrbolton/elementary_cellular_automata/issues"
 	},
 	"dependencies": {
-		"normalize.css": "3.0.2"
+		"normalize.css": "3.0.2",
+		"view-script": "0.0.1"
 	}
 }
