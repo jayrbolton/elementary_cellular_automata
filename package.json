@@ -15,8 +15,12 @@
 	"bugs": {
 		"url": "https://github.com/jayrbolton/elementary_cellular_automata/issues"
 	},
+	"devDependencies": {
+		"browserify": "11.0.1",
+		"babelify": "6.3.0"
+	},
 	"dependencies": {
-		"normalize.css": "3.0.2",
-		"view-script": "0.0.1"
+		"ramda": "0.17.1",
+		"normalize.css": "3.0.2"
 	}
 }
