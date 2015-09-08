@@ -1,4 +1,3 @@
-@import 'node_modules/normalize.css/normalize.css';
 
 * {
 	-webkit-box-sizing: border-box;
@@ -8,16 +7,32 @@
 
 html {
 	height: 100%;
+	margin: 0;
+	padding: 0;
 }
 
 body {
 	background: white;
 	overflow-x: hidden;
 	height: 100%;
+	font-family: 'Cardo', sans-serif;
+	color: #222;
+	margin: 0;
+	padding: 0;
+}
+
+p {
+	font-size: 18px;
+}
+
+a {
+	color: rgb(97, 101, 142);
+	text-decoration: none;
+	display: inline-block;
 }
 
 h1 {
-	font-size: 22px;
+	font-size: 34px;
 	margin-top: 0;
 }
 
@@ -26,7 +41,6 @@ h1 {
 }
 
 .field--inline {
-	margin-top: 2em;
 	margin-bottom: 1em;
 	display: inline-block;
 	margin-right: 20px;
@@ -45,14 +59,11 @@ h1 {
 	cursor: default;
 }
 
-rect[data-state='1'] { fill: #666; }
-.cell[data-state='1'] { background: #444; }
-
-rect[data-state='0'] { fill: white; }
-.cell[data-state='0'] { background: white; }
+.cell {background: white; }
+.cell.is-active { background: #444; }
 
 .rules-patterns-cells {
-	background: #ddd;
+	background: rgb(222, 223, 229);
 }
 
 .rules td {
@@ -68,11 +79,9 @@ rect[data-state='0'] { fill: white; }
 .cell {
 	display: inline-block;
 	border: 0;
-	margin: 0;
+	margin: 0 4px 0 0;
 	width: 12px;
 	height: 12px;
-	cursor: pointer;
-	background: transparent;
 }
 
 .rules-arrows td {
@@ -80,8 +89,23 @@ rect[data-state='0'] { fill: white; }
 }
 
 .rules-newStates .cell {
-	width: 17px;
-	height: 17px;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+}
+
+.row {
+	height: auto;
+}
+
+.grid .cell {
+	width: 30px;
+	height: 30px;
+	background: #ddd;
+}
+
+.grid .cell.is-active {
+	background: #222;
 }
 
 body > svg {
@@ -102,15 +126,19 @@ body > svg {
 	margin: 0 auto;
 }
 
+.wrapper {
+	z-index: 2;
+}
+
 .meta {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	right: -600px;
 	width: 600px;
-	height: 100%;
-	box-shadow: 0px 0px 12px -1px rgb(180, 180, 180);
-	background-color: rgb(230,230,230);
-	padding: 20px 50px;
+	min-height: 100%;
+	border-left: 1px solid rgb(181, 181, 181);
+	background: rgb(222, 223, 229);
+	padding: 20px 30px 10px 50px;
 	margin: 0;
 	-webkit-transition: right 0.25s ease-in-out;
 	-moz-transition: right 0.25s ease-in-out;
@@ -132,8 +160,10 @@ body > svg {
 	text-align: center;
 	line-height: 65px;
 	cursor: pointer;
-	box-shadow: -10px 0px 12px -11px rgb(208, 208, 208);
-	background-color: rgb(230,230,230);
+	border-left: 1px solid rgb(181, 181, 181);
+	border-bottom: 1px solid rgb(181, 181, 181);
+	border-top: 1px solid rgb(181, 181, 181);
+	background: rgb(222, 223, 229);
 	border-radius: 4px 0 0 4px;
 	color: #999;
 }
@@ -146,18 +176,18 @@ body > svg {
 	font-size: 38px;
 }
 
+.has-newSetting {
+	color: rgb(83, 205, 83);
+}
+
 .meta-btn:hover {
 	color: #222;
 }
 
-.meta-btn:nth-child(1) { top: 0; }
+.meta-btn:nth-child(1) { top: 8px; }
 .meta-btn:nth-child(2) { top: 80px; }
 .meta-btn:nth-child(3) { top: 160px; }
 .meta-btn:nth-child(4) { top: 240px; }
-
-.meta.is-open .meta-open {
-	color: #222;
-}
 
 .meta.is-open .meta-open-gear {
 	display: none;
@@ -190,7 +220,7 @@ body > svg {
 
 .field--seed span {
 	display: inline-block;
-	margin-left: 1.2em;
+	margin-left: 10px;
 }
 
 .field--seed span label {

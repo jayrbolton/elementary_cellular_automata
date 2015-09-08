@@ -1,95 +1,123 @@
-require('./js/d3.v3.min')
+'use strict'
+import R from 'ramda'
+import {flyd, combineState, createView} from '/home/big/j/code/vvvview/index.es6.js'
 
-var app = require('view-script'),
-	utils = require('./js/utils')
+import computeCA from './computeCA'
+import {root, streams} from './tree'
 
-app.def("settings", {
-	width: 100,
-	rules: [0,0,0,1,1,1,1,0],
-	seed: 'random',
-	color: 'red'
-})
+import decToBin from './lib/dec-to-bin'
+import drawGrid from './lib/drawGrid'
 
-app.def('draw', function() {
-	var svg = document.querySelector('svg'),
-		pad = 2,
-		cell_size = svg.offsetWidth / app.settings.width - pad,
-		n_rows = Math.floor(svg.offsetHeight / cell_size)
+window.flyd = flyd
+window.R = R
 
-	while(svg.firstChild) svg.removeChild(svg.firstChild)
+const cache = localStorage.getItem('eca.state')
+var defaults = {}
 
-	if(app.settings.seed === 'random')
-		var grid = generate_random(app.settings.width)
-	else
-		var grid = generate_middle(app.settings.width)
+const getCellWidth = width => window.innerWidth / (width+1)
+const getTotalRows = cellWidth => (window.innerHeight * 3) / cellWidth
 
-	for(var i = 0; i < n_rows; ++i) {
-		draw_row(svg, i, grid[i], cell_size, pad)
-		calculate_generation(i + 1, grid, app.settings.rules)
+if(cache) {
+	defaults = JSON.parse(cache)
+} else {
+	let rowWidth = 200
+	let cellWidth = getCellWidth(rowWidth)
+	let totalRows = getTotalRows(cellWidth)
+	let rule = [0,0,0,1,1,1,1,0]
+	defaults = cache ? JSON.parse(cache) : {
+		rule: rule,
+		decRule: 30,
+		color: 'red',
+		metaOpen: true,
+		rowWidth: rowWidth,
+		seed: 'middle',
+		cellWidth: cellWidth,
+		totalRows: totalRows,
+		cells: computeCA(totalRows, getInitialRow('middle', rowWidth), rule)
 	}
-})
-
-app.def('meta_open', true)
-app.draw()
-
-function draw_row(svg, row_index, row_data, cell_size, pad) {
-	var row = d3.select('svg').append('g')
-
-	var cols = row.selectAll('rect').data(row_data)
-		.enter().append('rect')
-		.attr('width', cell_size)
-		.attr('height', cell_size)
-		.attr('y', function() { return row_index * (cell_size + pad) })
-		.attr('x', function(_, i) { return i * (cell_size + pad) })
-		.attr('data-state', utils.id)
-
-	row
-		.attr('opacity', 0)
-		.transition()
-		.duration(300)
-		.delay(function(x,i) { return i * 300})
-		.attr('opacity', 1)
 }
+drawGrid(defaults.cellWidth, defaults.cells)
 
-function generate_random(width) {
-	var grid = [[]]
-	for(var i = 0; i < width; ++i) grid[0][i] = Math.round(Math.random())
-	return grid
-}
+// eca = elementary cellular automata
+var eca = createView(document.body, root, defaults)
 
-function generate_middle(width) {
-	var grid = [[]]
-	for(var i = 0; i < width; ++i) grid[0][i] = 0
-	grid[0][Math.floor(width/2)] = 1
-	return grid
-}
+// sync settings to localStorage
+eca.sync = state => localStorage.setItem('eca.state', JSON.stringify(state))
 
-function calculate_generation(row, grid, rules) {
-	var prev_row = grid[row-1],
-		new_row = grid[row] = []
-		width = prev_row.length
+//// streams
 
-	for(var i = 0; i < width; ++i) {
-		var top = prev_row[i],
-			left = prev_row[utils.mod(i-1, width)],
-			right = prev_row[utils.mod(i+1, width)],
-			index = parseInt(String(left) + String(top) + String(right), 2)
-		new_row.push(app.settings.rules[7-index])
+combineState(state => {
+	state.newSetting = true
+	return state
+}, eca, [streams.setRule, streams.setWidth, streams.selectSeed])
+
+// set a rule (in decimal)
+var rules = flyd.map(getVal, streams.setRule)
+combineState((state, decimal) => {
+	if(decimal === undefined || decimal > 255) return state
+	state.rule = decToBin(decimal)
+	state.decRule = decimal
+	return state
+}, eca, [rules])
+
+// refresh rules into the grid
+combineState(refresh, eca, [streams.refreshGrid])
+
+// open/close the meta panel
+combineState(state => {
+	state.metaOpen = !state.metaOpen
+	return state
+}, eca, [streams.toggleMetaPanel])
+
+// set the initial seed row
+combineState((state, ev) => {
+	state.seed = getVal(ev)
+	return state
+}, eca, [streams.selectSeed])
+
+combineState((state, ev) => {
+	let width = Number(getVal(ev))
+	if(width > 1000) return state
+	state.rowWidth = width
+	state.cellWidth = getCellWidth(width)
+	state.totalRows = getTotalRows(state.cellWidth)
+	return state
+}, eca, [streams.setWidth])
+
+combineState((state, settings) => {
+	for(var key in settings) {
+		state[key] = settings[key]
+		if(key === 'decRule') state.rule = decToBin(settings[key])
 	}
-	return grid
+	return refresh(state)
+}, eca, [streams.shortcutRule])
+
+function refresh(state) {
+	state.cells = computeCA(state.totalRows, getInitialRow(eca.state.seed, eca.state.rowWidth), eca.state.rule)
+	state.newSetting = false
+	drawGrid(state.cellWidth, state.cells)
+	return state
 }
 
-// Utils
+window.eca = eca
 
-// Meta settings/info
+// Generate an initial random row
+const initialRandom = (width) =>
+	[R.times(randBin, width)]
 
-// Convert a decimal number to binary and pad it with zeroes
-app.def('dec_to_bin', function(dec) {
-	if(isNaN(dec)) dec = 0
-	var bin = Number(dec).toString(2).split('')
-	// Zero-pad the binary number
-	for(var i = 0, len = bin.length; i < 8 - len; ++i)
-		bin.unshift('0')
-	return bin
-})
+// random binary num
+function randBin() {return Math.round(Math.random())}
+
+// Generate an initial row with only a black cell in the middle
+function getInitialRow(type, width) {
+	if(type === 'middle') {
+		return R.update(Math.floor(width/2), 1, R.repeat(0, width))
+	} else if(type === 'random') {
+		return R.map(randBin, R.repeat(0, width))
+	} else if(type === 'middleWhite') {
+		return R.update(Math.floor(width/2), 0, R.repeat(1, width))
+	}
+}
+
+function getVal(ev){return ev.target.value}
 
